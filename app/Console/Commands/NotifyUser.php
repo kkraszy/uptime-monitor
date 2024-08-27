@@ -74,7 +74,7 @@ class NotifyUser extends Command
             $text = "";
             $text .= "Monitoring Moonbite - strona padła!";
             $text .= "\n\n" . $customerSite->name . ' (' . $customerSite->url . ')';
-            $text .= "\n\Ostatnie 5 odpytań:";
+            $text .= "\nOstatnie 5 odpytań:";
             $text .= "\n";
             foreach ($responseTimes as $responseTime) {
                 $text .= $responseTime->created_at->format('H:i:s') . ' code:' . $responseTime->status_code . '  ' . $responseTime->response_time . ' ms';
