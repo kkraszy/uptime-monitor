@@ -2,7 +2,7 @@
 
 return [
     // Etykiety
-    'customer_site' => 'Strona',
+    'customer_site' => 'Strony',
     'list' => 'Lista Stron',
     'search' => 'Szukaj Strony',
     'search_text' => 'Tytuł ...',
