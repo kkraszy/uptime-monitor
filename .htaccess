@@ -1,0 +1,6 @@
+AddHandler application/x-httpd-php82 .php
+
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+RewriteRule ^(.*)$ public/$1 [L]
