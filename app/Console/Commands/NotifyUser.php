@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\CustomerSite;
 use App\Models\MonitoringLog;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
@@ -28,7 +29,7 @@ class NotifyUser extends Command
             if (!$customerSite->canNotifyUser()) {
                 continue;
             }
-        
+
             $responseTimes = MonitoringLog::query()
                 ->where('customer_site_id', $customerSite->id)
                 ->orderBy('created_at', 'desc')
@@ -39,8 +40,8 @@ class NotifyUser extends Command
 
             $statusCodes =  $responseTimes->avg('status_code');
 
-            $this->info($responseTimes->first()->url .' :'. $statusCodes);
-     
+            $this->info($responseTimes->first()->url . ' :' . $statusCodes);
+
             if ($responseTimeAverage >= ($customerSite->down_threshold * 0.9) || in_array($statusCodes, [500, 404, 503])) {
 
                 $this->notifyUser($customerSite, $responseTimes);
@@ -59,27 +60,32 @@ class NotifyUser extends Command
             return;
         }
 
-        $telegramChatId = $customerSite->owner->telegram_chat_id;
-        if (is_null($telegramChatId)) {
-            Log::channel('daily')->info('Missing telegram_chat_id form owner', $customerSite->toArray());
-            return;
-        }
+        $users = User::all();
 
-        $endpoint = 'https://api.telegram.org/bot'.config('services.telegram_notifier.token').'/sendMessage';
-        $text = "";
-        $text .= "Uptime: Website Down";
-        $text .= "\n\n".$customerSite->name.' ('.$customerSite->url.')';
-        $text .= "\n\nLast 5 response time:";
-        $text .= "\n";
-        foreach ($responseTimes as $responseTime) {
-            $text .= $responseTime->created_at->format('H:i:s').' code:'.$responseTime->status_code.'  '.$responseTime->response_time.' ms';
+        foreach ($users as $key => $user) {
+            $telegramChatId = $user->telegram_chat_id;
+
+            if (empty($telegramChatId)) {
+                Log::channel('daily')->info('Missing telegram_chat_id form owner', $customerSite->toArray());
+                continue;
+            }
+
+            $endpoint = 'https://api.telegram.org/bot' . config('services.telegram_notifier.token') . '/sendMessage';
+            $text = "";
+            $text .= "Uptime: Website Down";
+            $text .= "\n\n" . $customerSite->name . ' (' . $customerSite->url . ')';
+            $text .= "\n\nLast 5 response time:";
             $text .= "\n";
+            foreach ($responseTimes as $responseTime) {
+                $text .= $responseTime->created_at->format('H:i:s') . ' code:' . $responseTime->status_code . '  ' . $responseTime->response_time . ' ms';
+                $text .= "\n";
+            }
+            $text .= "\nCheck here:";
+            $text .= "\n" . route('customer_sites.show', [$customerSite->id]);
+            Http::post($endpoint, [
+                'chat_id' => $telegramChatId,
+                'text' => $text,
+            ]);
         }
-        $text .= "\nCheck here:";
-        $text .= "\n".route('customer_sites.show', [$customerSite->id]);
-        Http::post($endpoint, [
-            'chat_id' => $telegramChatId,
-            'text' => $text,
-        ]);
     }
 }
