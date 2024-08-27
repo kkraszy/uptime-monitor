@@ -86,6 +86,8 @@ class NotifyUser extends Command
                 'chat_id' => $telegramChatId,
                 'text' => $text,
             ]);
+
+            Log::channel('daily')->info('Send message to: '.$telegramChatId);
         }
     }
 }
