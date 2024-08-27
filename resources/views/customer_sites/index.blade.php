@@ -9,7 +9,7 @@
             {{ link_to_route('customer_sites.create', __('customer_site.create'), [], ['class' => 'btn btn-success']) }}
         @endcan
     </div>
-    <h2 class="page-title">{{ __('customer_site.list') }} <small>{{ __('app.total') }} : {{ $customerSites->total() }} {{ __('customer_site.customer_site') }}</small></h2>
+    <h2 class="page-title">{{ __('customer_site.list') }}</h2>
 </div>
 
 <div class="row">

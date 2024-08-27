@@ -9,7 +9,7 @@
             {{ link_to_route('vendors.create', __('vendor.create'), [], ['class' => 'btn btn-success']) }}
         @endcan
     </div>
-    <h2 class="page-title">{{ __('vendor.list') }} <small>{{ __('app.total') }} : {{ $vendors->total() }} {{ __('vendor.vendor') }}</small></h2>
+    <h2 class="page-title">{{ __('vendor.list') }} </h2>
 </div>
 
 <div class="row">
