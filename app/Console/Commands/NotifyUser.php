@@ -62,7 +62,7 @@ class NotifyUser extends Command
 
         $users = User::all();
 
-        foreach ($users as $key => $user) {
+        foreach ($users as $user) {
             $telegramChatId = $user->telegram_chat_id;
 
             if (empty($telegramChatId)) {
@@ -72,15 +72,15 @@ class NotifyUser extends Command
 
             $endpoint = 'https://api.telegram.org/bot' . config('services.telegram_notifier.token') . '/sendMessage';
             $text = "";
-            $text .= "Uptime: Website Down";
+            $text .= "Monitoring Moonbite - strona padła!";
             $text .= "\n\n" . $customerSite->name . ' (' . $customerSite->url . ')';
-            $text .= "\n\nLast 5 response time:";
+            $text .= "\n\Ostatnie 5 odpytań:";
             $text .= "\n";
             foreach ($responseTimes as $responseTime) {
                 $text .= $responseTime->created_at->format('H:i:s') . ' code:' . $responseTime->status_code . '  ' . $responseTime->response_time . ' ms';
                 $text .= "\n";
             }
-            $text .= "\nCheck here:";
+            $text .= "\nSprawdź:";
             $text .= "\n" . route('customer_sites.show', [$customerSite->id]);
             Http::post($endpoint, [
                 'chat_id' => $telegramChatId,
