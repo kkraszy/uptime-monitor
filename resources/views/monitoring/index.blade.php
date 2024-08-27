@@ -5,7 +5,7 @@
 <div class="row">
     <div class="col-md-6">
         <h1>
-            Dashboard
+            Panel
             @if (request('uptime_poll', 0))
                 <a href="{{ route('home', ['uptime_poll' => 0] + Request::except(['uptime_poll'])) }}" class="btn btn-danger">STOP Monitoring</a>
             @else
