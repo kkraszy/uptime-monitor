@@ -20,7 +20,7 @@ class CustomerSiteController extends Controller
         $customerSiteQuery = CustomerSite::query();
         $customerSiteQuery->where('name', 'like', '%'.$request->get('q').'%');
         $customerSiteQuery->orderBy('name');
-        $customerSiteQuery->where('owner_id', auth()->id());
+        // $customerSiteQuery->where('owner_id', auth()->id());
         if ($vendorId = $request->get('vendor_id')) {
             if ($vendorId == 'null') {
                 $customerSiteQuery->whereNull('vendor_id');
