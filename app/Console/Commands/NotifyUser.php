@@ -72,7 +72,7 @@ class NotifyUser extends Command
 
             $endpoint = 'https://api.telegram.org/bot' . config('services.telegram_notifier.token') . '/sendMessage';
             $text = "";
-            $text .= "Monitoring Moonbite - strona padła!";
+            $text .= "Monitoring Moonbite - problem ze stroną: ".$customerSite->name;
             $text .= "\n\n" . $customerSite->name . ' (' . $customerSite->url . ')';
             $text .= "\nOstatnie 5 odpytań:";
             $text .= "\n";
